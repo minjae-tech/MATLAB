@@ -1,0 +1,120 @@
+%%P1
+%근 찾기
+f=@(x)0.3*x-sin(2*x);
+f(0);%=0
+f(1);%음수
+f(4);%양수 따라서 1과 4 사이 근 존재
+root1=f(0) %fzero 사용을 위해 구간 음수 양수 측정하다가 구함
+root2=fzero(f,[1,4])
+%0과 4사이 최솟값 구하기
+[xmin,fmin]=fminbnd(f,0,4)
+%그래프를 통해 확인해서 전역에서 최소 증명
+x=0:0.01:4;
+y=0.3*x-sin(2*x);
+plot(x,y)
+
+%%P2
+h=100; % m
+v0=50; % m/s
+g=9.81; % m/s^2
+
+% 함수 정의 0.5*g*t^2-v0*t+h
+a = 0.5*g;
+b = -v0;
+c = h;
+
+t = roots([a b c])
+
+% 큰 값 → 내려올 때 다시 통과
+% 작은 값 → 올라갈 때 도달
+
+%%P3
+
+function A = kmj_23013311_func_3a(r, V)
+
+A = pi*r*sqrt(r^2 + (3*V/(pi*r^2))^2);
+
+end
+function A = kmj_23013311_func_3b(r)
+
+global V   % 전역변수 선언
+
+A = pi*r*sqrt(r^2 + (3*V/(pi*r^2))^2);
+%% P3(c)
+global V
+V = 10;   % in^3
+
+% A 함수 (익명함수)
+Afun = @(r) pi*r.*sqrt(r.^2 + (3*V./(pi*r.^2)).^2);
+
+% 1) 최적 반경
+[r_opt, A_min] = fminbnd(Afun, 0.01, 10)
+
+% 2) 대응 높이
+h_opt = 3*V/(pi*r_opt^2)
+
+% 3) 그래프
+r = 0.5:0.1:10;
+A = Afun(r);
+
+figure;
+plot(r, A); hold on;
+plot(r_opt, A_min);
+yline(1.1*A_min);
+grid on;
+xlabel('r (in)');
+ylabel('A (in^2)');
+title('면적 vs 반지름');
+
+% 4) 10% 증가 범위
+target = 1.1*A_min;
+f = @(r) Afun(r) - target;
+
+r_low  = fzero(f, [1.0 1.8])
+r_high = fzero(f, [2.0 3.0])
+%% 해석 표면적이 최소값보다 10%증가하기 전까지 r은 약 1.48~2.33 in 범위에 있을 수 있다.
+
+%% P4
+f = @(x) 10*exp(-2*x);
+
+x = 0:0.01:2;
+y = f(x);
+
+plot(x,y,'LineWidth',1.5)
+grid on
+xlabel('x')
+ylabel('f(x)')
+title('f(x)=10e^{-2x}')
+%% P5
+% 함수 plot (a)
+f=@(x)30*x.^2-300*x+4
+x=0:0.01:10;
+y=f(x)
+
+plot(x,y)
+xlabel('x')
+ylabel('f(x)')
+title('300x^2-300x+4')
+
+% 최소값 위치 (b)
+[xmin ymin]=fminbnd(f,4,5) % 그래프를 통해 4,6사이 확인
+
+%%P6
+% 각각 정의
+f = @(x) x.^2;
+g = @(y) 3*cos(y);
+h = @(z) 6*exp(z);
+
+% 합성 함수
+F = @(x) h(g(f(x)));
+
+% 그래프
+x = linspace(0,4,200);
+y = F(x);
+
+plot(x,y)
+grid on
+xlabel('x')
+ylabel('F(x)')
+title('6e^{3cos(x^2)}')
+
